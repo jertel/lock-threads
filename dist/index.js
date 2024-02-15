@@ -238,6 +238,8 @@ const schema = _notfoundjoi.object({
 
   'remove-issue-labels': joiLabels.default(''),
 
+  'include-issue-currently-open': _notfoundjoi.boolean().default(false),
+
   'issue-comment': _notfoundjoi.string().trim().max(10000).allow('').default(''),
 
   'issue-lock-reason': _notfoundjoi.string()
@@ -267,6 +269,8 @@ const schema = _notfoundjoi.object({
   'add-pr-labels': joiLabels.default(''),
 
   'remove-pr-labels': joiLabels.default(''),
+
+  'include-pr-currently-open': _notfoundjoi.boolean().default(false),
 
   'pr-comment': _notfoundjoi.string().trim().max(10000).allow('').default(''),
 
@@ -301,6 +305,8 @@ const schema = _notfoundjoi.object({
   'add-discussion-labels': joiLabels.default(''),
 
   'remove-discussion-labels': joiLabels.default(''),
+
+  'include-discussion-currently-open': _notfoundjoi.boolean().default(false),
 
   'discussion-comment': _notfoundjoi.string().trim().max(10000).allow('').default(''),
 
@@ -691,7 +697,12 @@ class App {
     const updatedTime = this.getUpdatedTimestamp(
       this.config[`${threadType}-inactive-days`]
     );
-    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:closed is:unlocked`;
+    let query = `repo:${owner}/${repo} updated:<${updatedTime} is:unlocked`;
+
+    const includeOpen = this.config[`include-${threadType}-currently-open`];
+    if (!includeOpen) {
+      query += ' is:closed';
+    }
 
     const includeAnyLabels = this.config[`include-any-${threadType}-labels`];
     const includeAllLabels = this.config[`include-all-${threadType}-labels`];
