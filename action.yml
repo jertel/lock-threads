@@ -131,7 +131,7 @@ inputs:
   remove-discussion-labels:
     description: 'Labels to remove before locking a discussion, value must be a comma separated list of labels'
     default: ''
-  include-discussions-currently-open:
+  include-discussion-currently-open:
     description: 'Open discussions are also eligible to be locked'
     default: false
   discussion-comment:
